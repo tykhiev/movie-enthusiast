@@ -1,17 +1,20 @@
+// "use client";
+
 export async function generateStaticParams() {
   const data = await fetch(
-    `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.API_KEY}&language=en-US&page=1`
+    `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.API_KEY}&language=en-US`
   );
   const res = await data.json();
-  return res.results.map((movie) => {
-    movie: toString(movie.id);
-  });
+  return res.results.map((movie) => ({
+    movie: movie.id.toString(),
+  }));
 }
 export default async function MovieDetails({ params }) {
   const { movie } = params;
   const imagePath = "https://image.tmdb.org/t/p/original";
-  const detail = await fetch(`
-        https://api.themoviedb.org/3/movie/${movie}?api_key=${process.env.API_KEY}&language=en-US`);
+  const detail = await fetch(
+    `https://api.themoviedb.org/3/movie/${movie}?api_key=${process.env.API_KEY}&language=en-US`
+  );
   const res = await detail.json();
   console.log(res);
   return (
@@ -28,9 +31,9 @@ export default async function MovieDetails({ params }) {
       <h2 className="text-sm bg-gray-500 inline-block rounded-md my-2 mx-2 px-2 py-2">
         Genre
       </h2>
-      {res.genres.map((genre, index) => (
+      {res.genres.map((category, index) => (
         <span className="text-lg">
-          {genre.name}
+          {category.name}
           {index + 1 < res.genres.length ? ", " : ""}
         </span>
       ))}
@@ -44,7 +47,7 @@ export default async function MovieDetails({ params }) {
         className="my-12 w-full"
         priority
       />
-      <p>Description: {res.overview}</p>
+      <p className="text-base">Description: {res.overview}</p>
     </div>
   );
 }

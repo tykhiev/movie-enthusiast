@@ -1,10 +1,17 @@
-import Movie from "./Movie";
+// "use client";
 
-export default async function Home() {
+import Movie from "./Movie";
+import Pagination from "./Pagination";
+
+export default async function Home(props) {
+  const { searchParams } = props;
+  const page = searchParams.page ?? 1;
+
   const data = await fetch(
-    `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.API_KEY}&language=en-US&page=1`
+    `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.API_KEY}&language=en-US&page=${page}`
   );
   const res = await data.json();
+  console.log(res);
 
   return (
     <main>
@@ -18,6 +25,7 @@ export default async function Home() {
             release_date={movie.release_date}
           />
         ))}
+        {/* <Pagination currentPage={page} totalMovies={res.total_results} /> */}
       </div>
     </main>
   );
